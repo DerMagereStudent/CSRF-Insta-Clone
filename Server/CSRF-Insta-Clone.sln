@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSRFInstaClone.Core", "CSRFInstaClone.Core\CSRFInstaClone.Core.csproj", "{92A94B4C-8495-4123-AAB0-693E1EDD19D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSRFInstaClone.Infrastructure", "CSRFInstaClone.Infrastructure\CSRFInstaClone.Infrastructure.csproj", "{1C8A58AD-E1A5-4838-B845-5B28D40093DF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSRFInstaClone.WebAPI", "CSRFInstaClone.WebAPI\CSRFInstaClone.WebAPI.csproj", "{875CECD1-8CB0-4A3B-BFEB-163A595A06EA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{3E0CA889-28EE-4F0D-901B-1D357F19DD55}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{92A94B4C-8495-4123-AAB0-693E1EDD19D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92A94B4C-8495-4123-AAB0-693E1EDD19D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92A94B4C-8495-4123-AAB0-693E1EDD19D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92A94B4C-8495-4123-AAB0-693E1EDD19D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C8A58AD-E1A5-4838-B845-5B28D40093DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C8A58AD-E1A5-4838-B845-5B28D40093DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C8A58AD-E1A5-4838-B845-5B28D40093DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C8A58AD-E1A5-4838-B845-5B28D40093DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{875CECD1-8CB0-4A3B-BFEB-163A595A06EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{875CECD1-8CB0-4A3B-BFEB-163A595A06EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{875CECD1-8CB0-4A3B-BFEB-163A595A06EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{875CECD1-8CB0-4A3B-BFEB-163A595A06EA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{92A94B4C-8495-4123-AAB0-693E1EDD19D3} = {3E0CA889-28EE-4F0D-901B-1D357F19DD55}
+		{1C8A58AD-E1A5-4838-B845-5B28D40093DF} = {3E0CA889-28EE-4F0D-901B-1D357F19DD55}
+		{875CECD1-8CB0-4A3B-BFEB-163A595A06EA} = {3E0CA889-28EE-4F0D-901B-1D357F19DD55}
+	EndGlobalSection
+EndGlobal
