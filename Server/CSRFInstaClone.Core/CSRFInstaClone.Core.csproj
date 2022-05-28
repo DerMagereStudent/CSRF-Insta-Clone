@@ -6,6 +6,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Folder Include="Contracts\External\Requests\IdentityService" />
+      <Folder Include="Contracts\External\Responses\IdentityService" />
       <Folder Include="Contracts\Requests" />
     </ItemGroup>
 
