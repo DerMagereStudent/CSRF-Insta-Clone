@@ -44,6 +44,10 @@ namespace CSRFInstaClone.WebAPI.Migrations
                         .IsRequired()
                         .HasColumnType("bytea");
 
+                    b.Property<string>("ImageType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
                     b.ToTable("Images");
@@ -69,6 +73,9 @@ namespace CSRFInstaClone.WebAPI.Migrations
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
+
+                    b.Property<DateTime>("DateTimePosted")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
                         .IsRequired()

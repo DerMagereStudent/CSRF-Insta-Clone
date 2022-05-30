@@ -6,7 +6,7 @@ using CSRFInstaClone.Core.Entities;
 namespace CSRFInstaClone.Core.Services; 
 
 public interface IPostService {
-	Task<string> UploadImageAsync(byte[] data, string imageData);
+	Task<string> UploadImageAsync(byte[] data, string imageType);
 	Task UploadPostAsync(string userId, string description, string imageId);
 	Task DeletePostAsync(string postId);
 	Task<List<Post>> GetPostsAsync(string userId, int count, int offset);
