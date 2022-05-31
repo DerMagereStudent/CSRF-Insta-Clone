@@ -1,0 +1,9 @@
+﻿using IdentityService.Core.V1.Contracts.Requests.Information;
+using IdentityService.Core.V1.Contracts.Responses.Information;
+
+namespace IdentityService.Core.V1.Services.Information;
+
+public interface IAuthorizationInformationService {
+	Task<GetOrganizationalGroupByNameResponse> GetOrganizationalGroupByNameAsync(GetOrganizationalGroupByNameRequest request);
+	Task<GetUserClaimsForOrganizationalUnitResponse> GetUserClaimsForOrganizationalUnitAsync(GetUserClaimsForOrganizationalUnitRequest request);
+}
