@@ -2,7 +2,10 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
+using CSRFInstaClone.Core.Options;
+using CSRFInstaClone.Core.Services;
 using CSRFInstaClone.Infrastructure.Database;
+using CSRFInstaClone.Infrastructure.Services;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
@@ -30,6 +33,8 @@ public static class Program {
 	}
 
 	private static void ConfigureServiceCollection(WebApplicationBuilder builder) {
+		Program.ConfigureOptions(builder);
+		Program.ConfigureServices(builder);
 		Program.ConfigureControllers(builder);
 		Program.ConfigureSwagger(builder);
 		Program.ConfigureDatabase(builder);
@@ -44,6 +49,16 @@ public static class Program {
 		app.UseHttpsRedirection();
 		app.UseAuthorization();
 		app.MapControllers();
+	}
+
+	private static void ConfigureOptions(WebApplicationBuilder builder) {
+		builder.Services.Configure<GatewayOptions>(builder.Configuration.GetSection(GatewayOptions.AppSettingsKey));
+	}
+	
+	private static void ConfigureServices(WebApplicationBuilder builder) {
+		builder.Services.AddScoped<IIdentityService, IdentityService>();
+		builder.Services.AddScoped<IUserService, UserService>();
+		builder.Services.AddScoped<IPostService, PostService>();
 	}
 
 	private static void ConfigureControllers(WebApplicationBuilder builder) {

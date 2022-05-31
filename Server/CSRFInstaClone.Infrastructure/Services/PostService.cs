@@ -35,7 +35,7 @@ public class PostService : IPostService {
 	}
 
 	public async Task UploadPostAsync(string userId, string description, string imageId) {
-		await this._identityService.GetUserById(userId);
+		//await this._identityService.GetUserById(userId);
 
 		var image = await this._applicationDbContext.Images.FindAsync(imageId);
 
@@ -80,12 +80,17 @@ public class PostService : IPostService {
 	}
 
 	public async Task<List<Post>> GetPostsAsync(string userId, int count, int offset) {
-		return await this._applicationDbContext.Posts
+		IQueryable<Post> query = this._applicationDbContext.Posts
 			.Where(p => p.UserId.Equals(userId))
-			.OrderByDescending(p => p.DateTimePosted)
-			.Skip(offset)
-			.Take(count)
-			.ToListAsync();
+			.OrderByDescending(p => p.DateTimePosted);
+
+		if (offset >= 0)
+			query = query.Skip(offset);
+
+		if (count >= 0)
+			query = query.Take(count);
+
+		return await query.ToListAsync();
 	}
 
 	public async Task<Image> GetPostImageAsync(string postId) {
