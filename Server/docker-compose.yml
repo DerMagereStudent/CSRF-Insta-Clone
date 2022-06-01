@@ -1,0 +1,64 @@
+version: '3.8'
+services:
+  identity_api:
+    build:
+      context: ./
+      dockerfile: Identity.Dockerfile
+    command: 'dotnet IdentityService.WebAPI.dll --urls=http://*:7001 --environment="Development"'
+    environment:
+      POSTGRES_HOST: identity_database
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: root
+    restart: unless-stopped
+    depends_on:
+      - identity_cache
+      - identity_database
+  
+  identity_database:
+    image: postgres:14.1-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: root
+    restart: unless-stopped
+    
+  identity_cache:
+    image: redis:6.2.6-alpine
+    command: redis-server --loglevel warning
+    restart: unless-stopped
+    
+  instaclone_api:
+    build:
+      context: ./
+      dockerfile: Instaclone.Dockerfile
+    command: 'dotnet CSRFInstaClone.WebAPI.dll --urls=http://*:7002 --environment="Development"'
+    environment:
+      POSTGRES_HOST: instaclone_database
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: root
+    restart: unless-stopped
+    depends_on:
+      - instaclone_database
+      - identity_api
+    
+  instaclone_database:
+    image: postgres:14.1-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: root
+    restart: unless-stopped
+    
+  gateway_api:
+    build:
+      context: ./
+      dockerfile: ApiGateway.Dockerfile
+    command: 'dotnet CSRFInstaClone.ApiGateway.dll --urls=http://*:7003 --environment="Development"'
+    ports:
+      - 7003:7003
+    restart: unless-stopped
+    depends_on:
+      - identity_api
+      - instaclone_api
