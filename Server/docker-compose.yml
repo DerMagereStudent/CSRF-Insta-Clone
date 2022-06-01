@@ -10,6 +10,8 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: root
       POSTGRES_DB: root
+    ports:
+      - 7001:7001
     restart: unless-stopped
     depends_on:
       - identity_cache

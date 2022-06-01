@@ -1,6 +1,6 @@
 {
     "GlobalConfiguration": {
-        "BaseUrl": "http://localhost:7005"
+        "BaseUrl": "http://localhost:7003"
     },
     "Routes": [
         {
@@ -194,6 +194,80 @@
             ],
             "UpstreamPathTemplate": "/api/identity/v1/authorization/unit/userclaim",
             "UpstreamHttpMethod": [ "POST", "DELETE" ]
+        },
+        {
+            "DownstreamPathTemplate": "/v1/user/signup",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "instaclone_api",
+                    "Port": 7002
+                }
+            ],
+            "UpstreamPathTemplate": "/api/app/v1/user/signup",
+            "UpstreamHttpMethod": [
+                "POST"
+            ]
+        },
+        {
+            "DownstreamPathTemplate": "/v1/user/biography",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "instaclone_api",
+                    "Port": 7002
+                }
+            ],
+            "UpstreamPathTemplate": "/api/app/v1/user/biography",
+            "UpstreamHttpMethod": [ "PUT" ]
+        },
+        {
+            "DownstreamPathTemplate": "/v1/user/profile",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "instaclone_api",
+                    "Port": 7002
+                }
+            ],
+            "UpstreamPathTemplate": "/api/app/v1/user/profile",
+            "UpstreamHttpMethod": [ "GET" ]
+        },
+        {
+            "DownstreamPathTemplate": "/v1/user/follow",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "instaclone_api",
+                    "Port": 7002
+                }
+            ],
+            "UpstreamPathTemplate": "/api/app/v1/user/follow",
+            "UpstreamHttpMethod": [ "POST", "DELETE" ]
+        },
+        {
+            "DownstreamPathTemplate": "/v1/post",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "instaclone_api",
+                    "Port": 7002
+                }
+            ],
+            "UpstreamPathTemplate": "/api/app/v1/post",
+            "UpstreamHttpMethod": [ "GET", "POST", "DELETE" ]
+        },
+        {
+            "DownstreamPathTemplate": "/v1/post/image",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "instaclone_api",
+                    "Port": 7002
+                }
+            ],
+            "UpstreamPathTemplate": "/api/app/v1/post/image",
+            "UpstreamHttpMethod": [ "GET", "POST" ]
         }
     ]
 }

@@ -25,11 +25,14 @@ public class IdentityService : IIdentityService {
 
 	public async Task SignUpAsync(string username, string email, string password) {
 		using var httpClient = new HttpClient();
-		var signUpResponse = await httpClient.SendPostAsync<SignUpRequest, SignUpResponse>(this._gatewayOptions.Value.Routes.IdentityServiceSignUp, new SignUpRequest {
-			Username = username,
-			Email = email,
-			Password = password
-		});
+		var signUpResponse = await httpClient.SendPostAsync<SignUpRequest, SignUpResponse>(
+			this._gatewayOptions.Value.Routes.IdentityServiceSignUp,
+			new SignUpRequest {
+				Username = username,
+				Email = email,
+				Password = password
+			}
+		);
 
 		if (signUpResponse is null) {
 			throw new InfoException(new List<Info> {new() {

@@ -35,7 +35,7 @@ public class PostService : IPostService {
 	}
 
 	public async Task UploadPostAsync(string userId, string description, string imageId) {
-		//await this._identityService.GetUserById(userId);
+		await this._identityService.GetUserById(userId);
 
 		var image = await this._applicationDbContext.Images.FindAsync(imageId);
 
