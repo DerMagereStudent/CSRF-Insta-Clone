@@ -8,6 +8,7 @@ using CSRFInstaClone.Core.Exceptions;
 using CSRFInstaClone.Core.Services;
 using CSRFInstaClone.Core.ValueObjects;
 using CSRFInstaClone.WebAPI.Extensions;
+using CSRFInstaClone.WebAPI.Filters;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,9 +18,11 @@ namespace CSRFInstaClone.WebAPI.Controllers;
 [Route("v1/post")]
 public class PostController : ControllerBase {
 	private readonly IPostService _postService;
+	private readonly IIdentityService _identityService;
 
-	public PostController(IPostService postService) {
+	public PostController(IPostService postService, IIdentityService identityService) {
 		this._postService = postService;
+		this._identityService = identityService;
 	}
 
 	[HttpGet]
@@ -48,9 +51,13 @@ public class PostController : ControllerBase {
 	}
 	
 	[HttpPost]
+	[UserAuthenticated]
 	public async Task<IActionResult> UploadPostAsync([FromBody] UploadPostRequest requestBody) {
 		try {
-			await this._postService.UploadPostAsync(requestBody.UserId, requestBody.Description, requestBody.ImageId);
+			await this._postService.UploadPostAsync(
+				this._identityService.GetUserIdFromAuthToken(this.Request.Headers.Authorization)!,
+				requestBody.Description, requestBody.ImageId
+			);
 
 			return this.Ok(new UploadPostResponse {
 				Succeeded = true,
@@ -71,9 +78,10 @@ public class PostController : ControllerBase {
 	}
 
 	[HttpDelete]
+	[UserAuthenticated]
 	public async Task<IActionResult> DeletePostAsync([FromBody] DeletePostRequest requestBody) {
 		try {
-			await this._postService.DeletePostAsync(requestBody.PostId);
+			await this._postService.DeletePostAsync(this._identityService.GetUserIdFromAuthToken(this.Request.Headers.Authorization)!, requestBody.PostId);
 
 			return this.Ok(new DeletePostResponse {
 				Succeeded = true,
@@ -107,6 +115,7 @@ public class PostController : ControllerBase {
 	
 	[HttpPost]
 	[Route("image")]
+	[UserAuthenticated]
 	public async Task<IActionResult> UploadImageAsync() {
 		if (this.Request.Form.Files.Count == 0) {
 			return this.BadRequest(new UploadImageResponse {

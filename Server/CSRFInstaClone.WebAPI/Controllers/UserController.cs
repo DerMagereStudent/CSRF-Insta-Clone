@@ -8,6 +8,7 @@ using CSRFInstaClone.Core.Exceptions;
 using CSRFInstaClone.Core.Services;
 using CSRFInstaClone.Core.ValueObjects;
 using CSRFInstaClone.WebAPI.Extensions;
+using CSRFInstaClone.WebAPI.Filters;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,9 +18,11 @@ namespace CSRFInstaClone.WebAPI.Controllers;
 [Route("v1/user")]
 public class UserController : ControllerBase {
 	private readonly IUserService _userService;
+	private readonly IIdentityService _identityService;
 
-	public UserController(IUserService userService) {
+	public UserController(IUserService userService, IIdentityService identityService) {
 		this._userService = userService;
+		this._identityService = identityService;
 	}
 
 	[HttpPost]
@@ -46,9 +49,10 @@ public class UserController : ControllerBase {
 	
 	[HttpPut]
 	[Route("biography")]
+	[UserAuthenticated]
 	public async Task<IActionResult> UpdateBiographyAsync([FromBody] UpdateBiographyRequest requestBody) {
 		try {
-			await this._userService.UpdateBiographyAsync(requestBody.UserId, requestBody.Biography);
+			await this._userService.UpdateBiographyAsync(this._identityService.GetUserIdFromAuthToken(this.Request.Headers.Authorization)!, requestBody.Biography);
 			
 			return this.Ok(new UpdateBiographyResponse() {
 				Succeeded = true,
@@ -93,9 +97,10 @@ public class UserController : ControllerBase {
 
 	[HttpPost]
 	[Route("follow")]
+	[UserAuthenticated]
 	public async Task<IActionResult> FollowUserAsync([FromBody] FollowRequest requestBody) {
 		try {
-			await this._userService.FollowUserAsync(requestBody.UserId, requestBody.FollowerId);
+			await this._userService.FollowUserAsync(requestBody.UserId, this._identityService.GetUserIdFromAuthToken(this.Request.Headers.Authorization)!);
 
 			return this.Ok(new FollowResponse {
 				Succeeded = true,
@@ -117,9 +122,10 @@ public class UserController : ControllerBase {
 
 	[HttpDelete]
 	[Route("follow")]
+	[UserAuthenticated]
 	public async Task<IActionResult> UnfollowUserAsync([FromBody] UnfollowRequest requestBody) {
 		try {
-			await this._userService.UnfollowUserAsync(requestBody.UserId, requestBody.FollowerId);
+			await this._userService.UnfollowUserAsync(requestBody.UserId, this._identityService.GetUserIdFromAuthToken(this.Request.Headers.Authorization)!);
 
 			return this.Ok(new UnfollowResponse {
 				Succeeded = true,

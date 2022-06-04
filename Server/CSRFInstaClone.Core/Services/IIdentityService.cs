@@ -9,4 +9,5 @@ public interface IIdentityService {
 	Task SignUpAsync(string username, string email, string password);
 	Task<UserDto> GetUserById(string userId);
 	Task<List<UserDto>> GetUsersByNameOrEmailAsync(string usernameEmail);
+	string? GetUserIdFromAuthToken(string token);
 }

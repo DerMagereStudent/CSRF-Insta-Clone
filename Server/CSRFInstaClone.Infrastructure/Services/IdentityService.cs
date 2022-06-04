@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -83,5 +84,14 @@ public class IdentityService : IIdentityService {
 			throw new InfoException(getUserResponse.Errors.ToList());
 
 		return getUserResponse.Content!.Users.ToList();
+	}
+
+	public string? GetUserIdFromAuthToken(string token) {
+		var securityToken = new JwtSecurityTokenHandler().ReadToken(token);
+		
+		if (securityToken is not JwtSecurityToken jwtSecurityToken)
+			return null;
+		
+		return jwtSecurityToken.Claims.FirstOrDefault(claim => claim.Type.Equals(JwtRegisteredClaimNames.Sub))?.Value;
 	}
 }

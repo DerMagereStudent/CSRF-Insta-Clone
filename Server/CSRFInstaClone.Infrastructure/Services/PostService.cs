@@ -60,7 +60,7 @@ public class PostService : IPostService {
 		await this._applicationDbContext.SaveChangesAsync();
 	}
 
-	public async Task DeletePostAsync(string postId) {
+	public async Task DeletePostAsync(string userId, string postId) {
 		var post = await this._applicationDbContext.Posts.FindAsync(postId);
 
 		if (post is null) {
@@ -68,6 +68,15 @@ public class PostService : IPostService {
 				new Info {
 					Code = "PostDoesNotExist",
 					Description = "The post that should be deleted does not exist"
+				}
+			});
+		}
+
+		if (!post.UserId.Equals(userId)) {
+			throw new InfoException(new List<Info> {
+				new Info {
+					Code = "Unauthorized",
+					Description = "The post that should be deleted is not owned by the specified user"
 				}
 			});
 		}

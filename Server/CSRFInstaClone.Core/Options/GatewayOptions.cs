@@ -9,5 +9,7 @@ public class GatewayOptions {
 		
 		public string IdentityServiceInformationGetUserById { get; set; }
 		public string IdentityServiceInformationGetUsersByNameOrEmail { get; set; }
+		
+		public string IdentityServiceAuthorizeUser { get; set; }
 	}
 }
