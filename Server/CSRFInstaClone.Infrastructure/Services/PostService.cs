@@ -34,16 +34,16 @@ public class PostService : IPostService {
 		return image.Id;
 	}
 
-	public async Task UploadPostAsync(string userId, string description, string imageId) {
+	public async Task UploadPostAsync(string userId, string description, string[] imageIds) {
 		await this._identityService.GetUserById(userId);
 
-		var image = await this._applicationDbContext.Images.FindAsync(imageId);
+		var images = await this._applicationDbContext.Images.Where(i => imageIds.Contains(i.Id)).ToListAsync();
 
-		if (image is null) {
+		if (images.Count == 0) {
 			throw new InfoException(new List<Info> {
 				new Info {
-					Code = "ImageDoesNotExist",
-					Description = "The image that should be linked to the post does not exist"
+					Code = "NoImagesToLink",
+					Description = "There are no existing images to link with the post"
 				}
 			});
 		}
@@ -51,10 +51,12 @@ public class PostService : IPostService {
 		var post = new Post {
 			Id = Guid.NewGuid().ToString(),
 			UserId = userId,
-			ImageId = imageId,
 			Description = description,
 			DateTimePosted = DateTime.UtcNow
 		};
+
+		foreach (var image in images)
+			image.PostId = post.Id;
 
 		this._applicationDbContext.Posts.Add(post);
 		await this._applicationDbContext.SaveChangesAsync();
@@ -81,9 +83,6 @@ public class PostService : IPostService {
 			});
 		}
 
-		var image = await this.GetPostImageAsync(post.ImageId);
-
-		this._applicationDbContext.Images.Remove(image);
 		this._applicationDbContext.Posts.Remove(post);
 		await this._applicationDbContext.SaveChangesAsync();
 	}
@@ -102,18 +101,18 @@ public class PostService : IPostService {
 		return await query.ToListAsync();
 	}
 
-	public async Task<Image> GetPostImageAsync(string postId) {
-		var post = await this._applicationDbContext.Posts.FindAsync(postId);
+	public async Task<Image> GetPostImageAsync(string imageId) {
+		var image = await this._applicationDbContext.Images.FindAsync(imageId);
 
-		if (post is null) {
+		if (image is null) {
 			throw new InfoException(new List<Info> {
 				new Info {
-					Code = "PostDoesNotExist",
-					Description = "The post  does not exist"
+					Code = "ImageDoesNotExist",
+					Description = "The image does not exist"
 				}
 			});
 		}
 
-		return (await this._applicationDbContext.Images.FindAsync(post.ImageId))!;
+		return image;
 	}
 }

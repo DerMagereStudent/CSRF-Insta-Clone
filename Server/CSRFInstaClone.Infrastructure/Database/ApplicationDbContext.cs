@@ -1,6 +1,4 @@
-﻿using System.Collections.Immutable;
-
-using CSRFInstaClone.Core.Entities;
+﻿using CSRFInstaClone.Core.Entities;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -25,9 +23,10 @@ public class ApplicationDbContext : DbContext {
 		modelBuilder.Entity<Post>(entity => {
 			entity.HasKey(p => p.Id);
 
-			entity.HasOne<Image>()
-				.WithOne()
-				.HasForeignKey<Post>(p => p.ImageId);
+			entity.HasMany(p => p.Images)
+				.WithOne(i => i.Post)
+				.HasForeignKey(i => i.PostId)
+				.OnDelete(DeleteBehavior.ClientCascade);
 		});
 		
 		modelBuilder.Entity<Image>(entity => {

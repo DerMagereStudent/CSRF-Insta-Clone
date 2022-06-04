@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 using CSRFInstaClone.Core.Contracts.Requests.Posts;
@@ -56,7 +57,7 @@ public class PostController : ControllerBase {
 		try {
 			await this._postService.UploadPostAsync(
 				this._identityService.GetUserIdFromAuthToken(this.Request.Headers.Authorization)!,
-				requestBody.Description, requestBody.ImageId
+				requestBody.Description, requestBody.ImageIds
 			);
 
 			return this.Ok(new UploadPostResponse {
@@ -105,7 +106,7 @@ public class PostController : ControllerBase {
 	[Route("image")]
 	public async Task<IActionResult> GetPostImageAsync([FromQuery] GetPostImageRequest requestBody) {
 		try {
-			var image = await this._postService.GetPostImageAsync(requestBody.PostId);
+			var image = await this._postService.GetPostImageAsync(requestBody.ImageId);
 			return this.File(image.Data, image.ImageType);
 		}
 		catch (Exception) {
@@ -117,7 +118,9 @@ public class PostController : ControllerBase {
 	[Route("image")]
 	[UserAuthenticated]
 	public async Task<IActionResult> UploadImageAsync() {
-		if (this.Request.Form.Files.Count == 0) {
+		var imageFiles = this.Request.Form.Files.Where(f => f.ContentType.StartsWith("image")).ToList();
+		
+		if (imageFiles.Count == 0) {
 			return this.BadRequest(new UploadImageResponse {
 				Errors = new[] {
 					new Info {
@@ -129,22 +132,28 @@ public class PostController : ControllerBase {
 		}
 		
 		try {
-			var file = this.Request.Form.Files[0];
+			var imageIds = new string[imageFiles.Count];
 
-			await using var ms = new MemoryStream();
-			await file.CopyToAsync(ms);
-			var fileBytes = ms.ToArray();
+			for (var i = 0; i < imageFiles.Count; i++) {
+				var file = imageFiles[i];
+				
+				await using var ms = new MemoryStream();
+				await file.CopyToAsync(ms);
+				var fileBytes = ms.ToArray();
+
+				imageIds[i] = await this._postService.UploadImageAsync(fileBytes, file.ContentType);
+			}
 
 			return this.Ok(new UploadImageResponse {
 				Succeeded = true,
 				Messages = new[] {
 					new Info {
-						Code = "ImageUploaded",
-						Description = "Image uploaded successfully"
+						Code = "ImagesUploaded",
+						Description = "All image files were uploaded successfully"
 					}
 				},
 				Content = new UploadImageResponse.Body {
-					ImageId = await this._postService.UploadImageAsync(fileBytes, file.ContentType)
+					ImageIds = imageIds
 				}
 			});
 		}
