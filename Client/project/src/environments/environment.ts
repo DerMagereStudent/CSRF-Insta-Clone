@@ -2,8 +2,21 @@
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+const identityProtocolAndDomain: string = "http://localhost:7003";
+
 export const environment = {
-  production: false
+  production: false,
+  authTokenKey: "authToken",
+  authTokenHeaderKey: "Authorization",
+  apiRoutes: {
+    identity: {
+      signUp: identityProtocolAndDomain + "/api/identity/v1/authentication/signup",
+      login: identityProtocolAndDomain + "/api/identity/v1/authentication/login",
+      authorizeUser: identityProtocolAndDomain + "/api/identity/v1/authorize/user",
+      informationUserById: identityProtocolAndDomain + "/api/identity/v1/information/authentication/user",
+      informationUsersByNameOrEmail: identityProtocolAndDomain + "/api/identity/v1/information/authentication/users",
+    }
+  }
 };
 
 /*

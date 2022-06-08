@@ -1,0 +1,14 @@
+<form [formGroup]="formModel" #form='ngForm' class="dms-form" autocomplete="off" (submit)="onSubmit()">
+  <h2>Login</h2>
+  <div class="form-group required">
+    <input id="usernameInput" class="form-control my-3" formControlName="usernameEmail" placeholder="Username or Email">
+    <label id="usernameInputRequiredError" class="text-danger" *ngIf="formModel.get('usernameEmail')?.touched && formModel.get('usernameEmail')?.errors?.['required']">This field is mandatory.</label>
+  </div>
+  <div class="form-group required">
+    <input id="emailInput" class="form-control my-3" formControlName="password" placeholder="Password">
+    <label id="emailInputRequiredError" class="text-danger" *ngIf="formModel.get('password')?.touched && formModel.get('password')?.errors?.['required']">This field is mandatory.</label>
+  </div>
+  <input id="loginFormSubmitButton" class="btn btn-primary my-2" type="submit" value="Login" [disabled]="form.invalid"/>
+  <p class="m-0">Don't have an account? <a id="signUpLink" href="" routerLink="/identity/signup">Sign Up</a></p>
+</form>
+<p-toast></p-toast>
