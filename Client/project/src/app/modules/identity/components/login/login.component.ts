@@ -23,7 +23,10 @@ export class LoginComponent implements OnInit {
 
   public async onSubmit(): Promise<void> {
     return this.identityService.sendLoginRequest({usernameEmail: this.formModel.value.usernameEmail, password: this.formModel.value.password}).then((response: any) => {
-      this.cookieService.put(environment.authTokenHeaderKey, response.content.token);
+      this.cookieService.put(environment.authTokenHeaderKey, response.content.token, {
+        sameSite: "none",
+        secure: true
+      });
       this.router.navigateByUrl('');
     });
   }
