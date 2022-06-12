@@ -1,0 +1,26 @@
+<div class="card p-0">
+  <div class="d-flex flex-row">
+    <strong class="my-2 ml-3 mr-0 d-inline-block"><a href="" routerLink="/posts/user/{{post.userId}}">{{username}}</a></strong>
+    <p class="text-info d-inline-block my-2 ml-3 mr-0" (click)="followUnfollow()" style="cursor: pointer">{{isFollowing ? 'Unfollow' : 'Follow' }}</p>
+  </div>
+  <div *ngIf="post.images.length > 1" id="postCarousel" class="carousel slide" data-ride="carousel" data-bs-interval="false">
+    <div class="carousel-inner">
+      <div *ngFor="let image of post.images; let i = index" class="carousel-item" [class.active]="i === 0">
+        <div class="d-flex">
+          <img style="width: 100% !important; flex: 1 1 auto;" [src]="imageUrl + '?ImageId=' + image.id" alt="">
+        </div>
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#postCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#postCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+  <img *ngIf="post.images.length === 1" style="flex: 1 1 auto;" [src]="imageUrl + '?ImageId=' + post.images[0].id" alt="">
+  <div class="p-3"><i class="fa-heart fa-xl" [class.fa-regular]="!liked" [class.fa-solid]="liked" (click)="likeUnlike()"></i> {{post.likes}} Likes</div>
+  <p *ngIf="post.description.length > 0" class="m-3 mt-0">{{post.description}}</p>
+</div>

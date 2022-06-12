@@ -10,6 +10,7 @@ import { PostsRoutingModule } from './posts-routing.module';
 import { PostService } from './services/post.service';
 import { UserService } from './services/user.service';
 import { GalleryItemComponent } from './components/user-info/components/gallery-item/gallery-item.component';
+import { PostComponent } from './components/home-page/components/post/post.component';
 
 @NgModule({
   imports: [
@@ -23,6 +24,7 @@ import { GalleryItemComponent } from './components/user-info/components/gallery-
   declarations: [
     PostsComponent,
     HomePageComponent,
+    PostComponent,
     UserInfoComponent,
     GalleryItemComponent
   ],
