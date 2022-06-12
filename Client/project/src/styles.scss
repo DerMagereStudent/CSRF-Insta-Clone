@@ -106,3 +106,21 @@ $pagination-disabled-border-color:  $pagination-border-color !default;
 
 
 @import "../node_modules/bootstrap/scss/bootstrap.scss";
+
+p-autocomplete input {
+    display: block !important;
+    width: 100% !important;
+    margin-right: 0.5rem !important;
+    padding: 0.75rem 1.5rem !important;
+    font-size: 1rem !important;
+    font-weight: 400 !important;
+    line-height: 1.5 !important;
+    color: #55595c !important;
+    background-color: #eceeef !important;
+    background-clip: padding-box !important;
+    border: 0 solid #ced4da !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    border-radius: 0 !important;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+}

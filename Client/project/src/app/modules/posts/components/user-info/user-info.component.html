@@ -1,0 +1,76 @@
+<div class="mt-5 col-offset-3 col-md-6">
+  <div class="row">
+    <div class="col-md-3">
+      <img class="rounded-circle" style="width: 100% !important; aspect-ratio: 1 / 1 !important;" src="/assets/blank-profile-picture.png" alt="">
+    </div>
+    <div *ngIf="profile" class="col-md-9 d-flex align-items-center">
+      <div class="row">
+        <div class="d-flex align-items-center">
+          <h3 class="d-inline-block mr-3">{{profile ? profile.displayName : ''}}</h3>
+          <button *ngIf="isOwnProfile" class="btn btn-primary" (click)="editBiography()">Edit Biography</button>
+          <button *ngIf="isOwnProfile" class="btn btn-primary ml-3" data-bs-toggle="modal" data-bs-target="#uploadPostDialog">Upload Post</button>
+          <button *ngIf="!isOwnProfile" class="btn btn-info">Follow</button>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-3">
+            <strong>Posts</strong>
+            <p class="m-0">{{posts.length}}</p>
+          </div>
+          <div class="col-md-3">
+            <strong>Followers</strong>
+            <p class="m-0">{{profile.followers}}</p>
+          </div>
+          <div class="col-md-3">
+            <strong>Following</strong>
+            <p class="m-0">{{profile.following}}</p>
+          </div>
+        </div>
+        <p *ngIf="!isEditingBiography" class="mt-2">{{profile.biography.length > 0 ? profile.biography : 'Empty biography'}}</p>
+        <div *ngIf="isEditingBiography" class="mt-2 d-flex justify-content-between align-items-center">
+          <input #biographyInput id="biographyInput" class="form-control flex-fill" type="text" placeholder="Biography" value="{{profile.biography}}"/>
+          <div class="btn-group ml-3">        
+            <button class="btn btn-primary" (click)="saveBiography()"><i class="fa-solid fa-check"></i></button>
+            <button class="btn btn-primary" (click)="cancelEdit()"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr>
+  <div class="row gx-3 gy-3 mb-5">
+    <app-gallery-item *ngFor="let post of posts" class="col-md-4" [post]="post"></app-gallery-item>
+  </div>
+</div>
+
+<div class="modal fade" id="uploadPostDialog" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Upload Post</h5>
+      </div>
+      <div class="modal-body">
+        <input #descriptionInput class="form-control mb-3" type="text" placeholder="Description" [(ngModel)]="description">
+        <p-fileUpload #imagesFileUpload [url]="imageUrl" method="post" [withCredentials]="true" (onUpload)="onUpload($event)" [multiple]="true" accept="image/*" [fileLimit]="10">
+            <ng-template pTemplate="content">
+                <!-- <ul *ngIf="uploadedFiles.length">
+                    <li *ngFor="let file of uploadedFiles">{{file.name}} - {{file.size}} bytes</li>
+                </ul> -->
+              <div *ngIf="uploadedFiles.length" class="p-fileupload-files">
+                <div *ngFor="let file of uploadedFiles" class="p-fileupload-row ng-star-inserted">
+                  <div>
+                      <img [src]="imageUrl + '?ImageId=' + file.id" width="50" class="ng-star-inserted">
+                  </div>
+                  <div class="p-fileupload-filename">{{file.file.name}}</div>
+                  <div>Uploaded</div>
+                </div>
+              </div>
+            </ng-template>
+        </p-fileUpload>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="resetUpload()">Close</button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" (click)="postImages()">Post</button>
+      </div>
+    </div>
+  </div>
+</div>

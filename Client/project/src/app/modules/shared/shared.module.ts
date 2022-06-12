@@ -9,12 +9,14 @@ import { MatInputModule } from '@angular/material/input';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
+import {AutoCompleteModule} from 'primeng/autocomplete';
 import {ButtonModule} from 'primeng/button';
 import {CalendarModule} from 'primeng/calendar';
 import {CardModule} from 'primeng/card';
 import {ContextMenuModule} from 'primeng/contextmenu';
 import {DialogModule} from 'primeng/dialog';
 import {DropdownModule} from 'primeng/dropdown';
+import {FileUploadModule} from 'primeng/fileupload';
 import {InputTextModule} from 'primeng/inputtext';
 import {MultiSelectModule} from 'primeng/multiselect';
 import {PanelModule} from 'primeng/panel';
@@ -42,12 +44,14 @@ import { UserLoggedInGuard } from './guards/user-logged-in-guard.service';
     MatToolbarModule,
     FlexLayoutModule,
 
+    AutoCompleteModule,
     ButtonModule,
     CalendarModule,
     CardModule,
     ContextMenuModule,
     DialogModule,
     DropdownModule,
+    FileUploadModule,
     InputTextModule,
     MultiSelectModule,
     PanelModule,
@@ -55,7 +59,7 @@ import { UserLoggedInGuard } from './guards/user-logged-in-guard.service';
     SliderModule,
     TableModule,
     ToastModule,
-    ToggleButtonModule
+    ToggleButtonModule,
   ],
   exports: [ 
     MatButtonModule,
@@ -66,12 +70,14 @@ import { UserLoggedInGuard } from './guards/user-logged-in-guard.service';
     MatToolbarModule,
     FlexLayoutModule,
     
+    AutoCompleteModule,
     ButtonModule,
     CalendarModule,
     CardModule,
     ContextMenuModule,
     DialogModule,
     DropdownModule,
+    FileUploadModule,
     InputTextModule,
     MultiSelectModule,
     PanelModule,

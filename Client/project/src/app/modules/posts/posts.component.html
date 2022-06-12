@@ -1,0 +1,29 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary px-5">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Viel besseres Instagram</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01"
+            aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarColor01">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" [routerLinkActive]="['active']" href="" routerLink="/posts/home">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" [routerLinkActive]="['active']" href="" routerLink="/posts/user">Profile</a>
+                </li>
+            </ul>
+        </div>
+        <form class="d-flex mr-5">
+            <!-- <input class="form-control me-sm-2" type="text" placeholder="Search"> -->
+            <p-autoComplete name="searchUser" field="username" placeholder="Search User" [suggestions]="userSuggestions" [(ngModel)]="selectedUser" (completeMethod)="search($event)"></p-autoComplete>
+            <button class="btn btn-secondary my-2 my-sm-0" type="submit" (click)="openUser()">Search</button>
+        </form>
+
+        <button class="d-flex btn btn-secondary my-2 my-sm-0 ml-5" (click)="logout()">Logout</button>
+    </div>
+</nav>
+<router-outlet></router-outlet>
+<p-toast></p-toast>

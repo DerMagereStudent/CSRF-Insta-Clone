@@ -35,10 +35,12 @@ export class SignUpComponent implements OnInit {
   }
 
   public async onSubmit(): Promise<void> {
-    return await this.identityService.sendSignUpRequest({
+    await this.identityService.sendSignUpRequest({
       username: this.formModel.value.username,
       email: this.formModel.value.email,
       password: this.formModel.value.passwords.password
     });
+    
+    this.router.navigateByUrl('/identity/login');
   }
 }

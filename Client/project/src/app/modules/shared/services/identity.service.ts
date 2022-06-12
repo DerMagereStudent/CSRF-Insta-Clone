@@ -24,7 +24,7 @@ export class IdentityService {
     return this.httpService.get(environment.apiRoutes.identity.informationUserById+`?UserId=${userId}`)
   }
 
-  public async sendGetUserNameOrEmailRequest(nameEmail: string): Promise<any> {
+  public async sendGetUsersByNameOrEmailRequest(nameEmail: string): Promise<any> {
     return this.httpService.get(environment.apiRoutes.identity.informationUsersByNameOrEmail+`?UsernameEmail=${nameEmail}`)
   }
 }
