@@ -1,6 +1,35 @@
-<div class="position-relative">
+<div class="position-relative" data-bs-toggle="modal" [attr.data-bs-target]="'#postDetailDialog_' + post.id">
   <img style="width: 100% !important; aspect-ratio: 1 / 1 !important; object-fit: cover !important;" [src]="imageUrl + '?ImageId=' + post.images[0].id" alt="">
   <div *ngIf="post.images.length > 1" class="gallery-item-type">
     <span class="visually-hidden">Gallery</span><i class="fas fa-clone" aria-hidden="true"></i>
+  </div>
+</div>
+
+<div #detailDialog class="modal fade" id="postDetailDialog_{{post.id}}" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document" style="max-width: 800px !important;">
+    <div class="modal-content">
+      <div class="modal-body d-flex p-0" style="flex-direction: column;">
+        <div *ngIf="post.images.length > 1" id="postCarousel" class="carousel slide" data-ride="carousel" data-bs-interval="false">
+          <div class="carousel-inner">
+            <div *ngFor="let image of post.images; let i = index" class="carousel-item" [class.active]="i === 0">
+              <div class="d-flex">
+                <img style="max-width: 800px !important; max-height: 800px !important; flex: 1 1 auto;" [src]="imageUrl + '?ImageId=' + image.id" alt="">
+              </div>
+            </div>
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#postCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#postCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
+        <img *ngIf="post.images.length === 1" style="max-width: 800px !important; max-height: 800px !important; flex: 1 1 auto;" [src]="imageUrl + '?ImageId=' + post.images[0].id" alt="">
+        <div class="p-3"><i class="fa-heart fa-xl" [class.fa-regular]="!liked" [class.fa-solid]="liked" (click)="likeUnlike()"></i> {{post.likes}} Likes</div>
+        <p *ngIf="post.description.length > 0" class="m-3 mt-0">{{post.description}}</p>
+      </div>
+    </div>
   </div>
 </div>

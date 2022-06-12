@@ -19,7 +19,10 @@ export class UserInfoComponent implements OnInit {
 
   public profile: any;
   public isOwnProfile: boolean = false;
+  public userId?: string;
+
   public isEditingBiography: boolean = false;
+  public isFollowing?: boolean;
 
   public posts: any[] = [];
 
@@ -36,6 +39,9 @@ export class UserInfoComponent implements OnInit {
     this.activatedRoute.params.subscribe(params => {
       this.setIsOwnProfile(params);
 
+      if (!this.isOwnProfile)
+        this.userId = params.UserId;
+      
       this.userService.getUserProfile(this.isOwnProfile ? null : params.UserId).then(response => {
         this.profile = response.content.profile
       });
@@ -43,6 +49,10 @@ export class UserInfoComponent implements OnInit {
       this.postService.getUserPosts(this.isOwnProfile ? null : params.UserId).then(response => {
         this.posts = response.content.posts.filter((post: any) => post.images.length > 0)
       });
+
+      if (!this.isOwnProfile) {
+        this.userService.checkFollow(this.userId!).then(response => this.isFollowing = response.content.following);
+      }
     });
   }
 
@@ -86,6 +96,21 @@ export class UserInfoComponent implements OnInit {
 
     await this.postService.postImages(this.description, this.uploadedFiles.map(f => f.id));
     window.location.reload();
+  }
+
+  public async followUnfollow(): Promise<void> {
+    if (this.isOwnProfile || this.isFollowing == null)
+      return;
+
+    if (!this.isFollowing) {
+      await this.userService.followUser(this.userId!);
+      this.isFollowing = true;
+      return;
+    }
+
+    await this.userService.unfollowUser(this.userId!);
+    this.isFollowing = false;
+    return;
   }
 
   private setIsOwnProfile(queryParams: any) {

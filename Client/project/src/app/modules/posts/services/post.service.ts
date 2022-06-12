@@ -23,4 +23,16 @@ export class PostService {
       imageIds: imageIds
     });
   }
+
+  public async checkLike(postId: string): Promise<any> {
+    return this.httpService.get(environment.apiRoutes.posts.likeCheck + `?PostId=${postId}`);
+  }
+
+  public async likePost(postId: string): Promise<any> {
+    return this.httpService.post(environment.apiRoutes.posts.like, { postId: postId });
+  }
+
+  public async unlikePost(postId: string): Promise<any> {
+    return this.httpService.delete(environment.apiRoutes.posts.like, { postId: postId });
+  }
 }

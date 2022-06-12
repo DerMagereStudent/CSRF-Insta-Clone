@@ -9,7 +9,7 @@
           <h3 class="d-inline-block mr-3">{{profile ? profile.displayName : ''}}</h3>
           <button *ngIf="isOwnProfile" class="btn btn-primary" (click)="editBiography()">Edit Biography</button>
           <button *ngIf="isOwnProfile" class="btn btn-primary ml-3" data-bs-toggle="modal" data-bs-target="#uploadPostDialog">Upload Post</button>
-          <button *ngIf="!isOwnProfile" class="btn btn-info">Follow</button>
+          <button *ngIf="!isOwnProfile" class="btn btn-info" (click)="followUnfollow()">{{isFollowing ? 'Unfollow' : 'Follow' }}</button>
         </div>
         <div class="row mt-2">
           <div class="col-md-3">
@@ -43,7 +43,7 @@
 </div>
 
 <div class="modal fade" id="uploadPostDialog" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-xl" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Upload Post</h5>

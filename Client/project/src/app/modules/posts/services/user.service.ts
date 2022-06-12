@@ -16,4 +16,16 @@ export class UserService {
   public async updateBiography(biography: string): Promise<void> {
     return this.httpService.put(environment.apiRoutes.user.biography, { Biography: biography });
   }
+
+  public async followUser(userId: string): Promise<any> {
+    return this.httpService.post(environment.apiRoutes.user.follow, {userId: userId});
+  }
+
+  public async unfollowUser(userId: string): Promise<any> {
+    return this.httpService.delete(environment.apiRoutes.user.follow, {userId: userId});
+  }
+
+  public async checkFollow(userId: string): Promise<any> {
+    return this.httpService.get(environment.apiRoutes.user.followCheck + `?UserId=${userId}`);
+  }
 }

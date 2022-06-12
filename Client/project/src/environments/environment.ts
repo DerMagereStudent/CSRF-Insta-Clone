@@ -19,12 +19,16 @@ export const environment = {
     },
     user: {
       userProfile: userProtocolAndDomain + "/api/app/v1/user/profile",
-      biography: userProtocolAndDomain + "/api/app/v1/user/biography"
+      biography: userProtocolAndDomain + "/api/app/v1/user/biography",
+      follow: userProtocolAndDomain + "/api/app/v1/user/follow",
+      followCheck: userProtocolAndDomain + "/api/app/v1/user/follow/check"
     },
     posts: {
       post: postsProtocolAndDomain + "/api/app/v1/post",
       homePage: postsProtocolAndDomain + "/api/app/v1/post/homepage",
       image: postsProtocolAndDomain + "/api/app/v1/post/image",
+      like: postsProtocolAndDomain + "/api/app/v1/post/like",
+      likeCheck: postsProtocolAndDomain + "/api/app/v1/post/like/check",
     }
   }
 };
