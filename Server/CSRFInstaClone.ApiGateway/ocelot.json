@@ -246,6 +246,18 @@
             "UpstreamHttpMethod": [ "POST", "DELETE" ]
         },
         {
+            "DownstreamPathTemplate": "/v1/user/follow/check",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "instaclone_api",
+                    "Port": 7002
+                }
+            ],
+            "UpstreamPathTemplate": "/api/app/v1/user/follow/check",
+            "UpstreamHttpMethod": [ "GET" ]
+        },
+        {
             "DownstreamPathTemplate": "/v1/post",
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [
@@ -280,6 +292,30 @@
             ],
             "UpstreamPathTemplate": "/api/app/v1/post/image",
             "UpstreamHttpMethod": [ "GET", "POST" ]
+        },
+        {
+            "DownstreamPathTemplate": "/v1/post/like",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "instaclone_api",
+                    "Port": 7002
+                }
+            ],
+            "UpstreamPathTemplate": "/api/app/v1/post/like",
+            "UpstreamHttpMethod": [ "POST", "DELETE" ]
+        },
+        {
+            "DownstreamPathTemplate": "/v1/post/like/check",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "instaclone_api",
+                    "Port": 7002
+                }
+            ],
+            "UpstreamPathTemplate": "/api/app/v1/post/like/check",
+            "UpstreamHttpMethod": [ "GET" ]
         }
     ]
 }

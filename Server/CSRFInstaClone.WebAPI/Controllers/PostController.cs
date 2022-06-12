@@ -196,4 +196,73 @@ public class PostController : ControllerBase {
 			return this.InternalServerErrorResponse<UploadImageResponse>();
 		}
 	}
+	
+	[HttpGet]
+	[Route("like/check")]
+	[UserAuthenticated]
+	public async Task<IActionResult> CheckLikeAsync([FromQuery] CheckLikeRequest requestBody) {
+		try {
+			return this.Ok(new CheckLikeReponse {
+				Succeeded = true,
+				Content = new CheckLikeReponse.Body() {
+					PostLiked = await this._postService.CheckLikeAsync(
+						this._identityService.GetUserIdFromAuthToken(this.Request.Cookies[HeaderNames.Authorization]!)!,
+						requestBody.PostId
+					)
+				}
+			});
+		}
+		catch (InfoException e) {
+			return this.InfoExceptionResponse<CheckLikeReponse>(e);
+		}
+		catch (Exception) {
+			return this.InternalServerErrorResponse<CheckLikeReponse>();
+		}
+	}
+	
+	[HttpPost]
+	[Route("like")]
+	[UserAuthenticated]
+	public async Task<IActionResult> LikePostAsync([FromBody] LikePostRequest requestBody) {
+		try {
+			await this._postService.LikePostAsync(
+				this._identityService.GetUserIdFromAuthToken(this.Request.Cookies[HeaderNames.Authorization]!)!,
+				requestBody.PostId
+			);
+			
+			return this.Ok(new LikePostResponse {
+				Succeeded = true,
+				Content = new LikePostResponse.Body()
+			});
+		}
+		catch (InfoException e) {
+			return this.InfoExceptionResponse<LikePostResponse>(e);
+		}
+		catch (Exception) {
+			return this.InternalServerErrorResponse<LikePostResponse>();
+		}
+	}
+	
+	[HttpDelete]
+	[Route("like")]
+	[UserAuthenticated]
+	public async Task<IActionResult> UnlikePostAsync([FromBody] UnlikePostRequest requestBody) {
+		try {
+			await this._postService.UnlikePostAsync(
+				this._identityService.GetUserIdFromAuthToken(this.Request.Cookies[HeaderNames.Authorization]!)!,
+				requestBody.PostId
+			);
+			
+			return this.Ok(new UnlikePostResponse {
+				Succeeded = true,
+				Content = new UnlikePostResponse.Body()
+			});
+		}
+		catch (InfoException e) {
+			return this.InfoExceptionResponse<UnlikePostResponse>(e);
+		}
+		catch (Exception) {
+			return this.InternalServerErrorResponse<UnlikePostResponse>();
+		}
+	}
 }

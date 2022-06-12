@@ -86,4 +86,8 @@ public class UserService : IUserService {
 		this._applicationDbContext.Followers.Remove(follower);
 		await this._applicationDbContext.SaveChangesAsync();
 	}
+
+	public async Task<bool> CheckFollowAsync(string userId, string followerId) {
+		return (await this._applicationDbContext.Followers.FindAsync(userId, followerId)) is not null;
+	}
 }

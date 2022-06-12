@@ -8,6 +8,7 @@ public class PostDto {
 	public string UserId { get; set; }
 	public string Description { get; set; }
 	public DateTime DateTimePosted { get; set; }
+	public int Likes { get; set; }
 	
 	public List<ImageDto> Images { get; set; }
 }

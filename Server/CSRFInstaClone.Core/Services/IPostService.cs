@@ -13,4 +13,7 @@ public interface IPostService {
 	Task<List<PostDto>> GetHomePagePostsAsync(string userId, int count, int offset);
 	Task<List<PostDto>> GetPostsAsync(string userId, int count, int offset);
 	Task<Image> GetPostImageAsync(string imageId);
+	Task LikePostAsync(string userId, string postId);
+	Task UnlikePostAsync(string userId, string postId);
+	Task<bool> CheckLikeAsync(string userId, string postId);
 }

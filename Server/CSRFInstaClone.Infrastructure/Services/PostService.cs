@@ -92,32 +92,15 @@ public class PostService : IPostService {
 		var followingUsers = await this._applicationDbContext.Followers
 			.Where(f => f.FollowerId.Equals(userId))
 			.Select(f => f.UserId).ToListAsync();
-		
-		IQueryable<PostDto> postsQuery = this._applicationDbContext.Posts
-			.Include(p => p.Images)
-			.Where(p => followingUsers.Contains(p.UserId))
-			.Select(p => new PostDto {
-				Id = p.Id,
-				UserId = p.UserId,
-				Description = p.Description,
-				DateTimePosted = p.DateTimePosted,
-				Images = p.Images.Select(i => new ImageDto {
-					Id = i.Id,
-					PostId = i.PostId
-				}).ToList()
-			})
-			.OrderByDescending(p => p.DateTimePosted);
 
-		if (offset > 0)
-			postsQuery = postsQuery.Skip(offset);
-
-		if (count > 0)
-			postsQuery = postsQuery.Take(count);
-
-		return await postsQuery.ToListAsync();
+		return await this.GetPostsAsync(userId, count, offset, p => followingUsers.Contains(p.UserId));
 	}
 
 	public async Task<List<PostDto>> GetPostsAsync(string userId, int count, int offset) {
+		return await this.GetPostsAsync(userId, count, offset, p => p.UserId.Equals(userId));
+	}
+
+	private async Task<List<PostDto>> GetPostsAsync(string userId, int count, int offset, Func<Post, bool> predicate) {
 		IQueryable<PostDto> query = this._applicationDbContext.Posts
 			.Include(p => p.Images)
 			.Where(p => p.UserId.Equals(userId))
@@ -139,7 +122,12 @@ public class PostService : IPostService {
 		if (count >= 0)
 			query = query.Take(count);
 
-		return await query.ToListAsync();
+		var posts = await query.ToListAsync();
+
+		foreach (var post in posts)
+			post.Likes = await this._applicationDbContext.Likes.Where(l => l.PostId.Equals(post.Id)).CountAsync();
+		
+		return posts;
 	}
 
 	public async Task<Image> GetPostImageAsync(string imageId) {
@@ -155,5 +143,58 @@ public class PostService : IPostService {
 		}
 
 		return image;
+	}
+	
+	public async Task LikePostAsync(string userId, string postId) {
+		await this._identityService.GetUserById(userId);
+
+		var post = await this._applicationDbContext.Posts.FindAsync(postId);
+		
+		if (post is null) {
+			throw new InfoException(new List<Info> {
+				new Info {
+					Code = "PostDoesNotExist",
+					Description = "The post does not exist"
+				}
+			});
+		}
+		
+		var like = await this._applicationDbContext.Likes.FindAsync(postId, userId);
+
+		if (like is not null)
+			return;
+
+		this._applicationDbContext.Likes.Add(new Like {
+			UserId = userId,
+			PostId = postId
+		});
+		await this._applicationDbContext.SaveChangesAsync();
+	}
+	
+	public async Task UnlikePostAsync(string userId, string postId) {
+		await this._identityService.GetUserById(userId);
+		
+		var post = await this._applicationDbContext.Posts.FindAsync(postId);
+		
+		if (post is null) {
+			throw new InfoException(new List<Info> {
+				new Info {
+					Code = "PostDoesNotExist",
+					Description = "The post does not exist"
+				}
+			});
+		}
+
+		var like = await this._applicationDbContext.Likes.FindAsync(postId, userId);
+
+		if (like is null)
+			return;
+
+		this._applicationDbContext.Likes.Remove(like);
+		await this._applicationDbContext.SaveChangesAsync();
+	}
+	
+	public async Task<bool> CheckLikeAsync(string userId, string postId) {
+		return (await this._applicationDbContext.Likes.FindAsync(postId, userId)) is not null;
 	}
 }

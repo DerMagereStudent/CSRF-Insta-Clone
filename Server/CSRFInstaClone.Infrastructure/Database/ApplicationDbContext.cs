@@ -37,8 +37,8 @@ public class ApplicationDbContext : DbContext {
 			entity.HasKey(l => new {l.PostId, l.UserId});
 			
 			entity.HasOne<Post>()
-				.WithOne()
-				.HasForeignKey<Like>(l => l.PostId);
+				.WithMany()
+				.HasForeignKey(l => l.PostId);
 		});
 		
 		modelBuilder.Entity<Follower>(entity => {

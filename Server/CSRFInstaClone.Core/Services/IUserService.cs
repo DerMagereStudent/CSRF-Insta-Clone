@@ -11,4 +11,5 @@ public interface IUserService {
 	Task<UserProfileDto> GetUserProfileAsync(string userId);
 	Task FollowUserAsync(string userId, string followerId);
 	Task UnfollowUserAsync(string userId, string followerId);
+	Task<bool> CheckFollowAsync(string userId, string followerId);
 }

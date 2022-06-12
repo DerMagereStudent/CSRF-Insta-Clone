@@ -154,4 +154,27 @@ public class UserController : ControllerBase {
 			return this.InternalServerErrorResponse<UnfollowResponse>();
 		}
 	}
+	
+	[HttpGet]
+	[Route("follow/check")]
+	[UserAuthenticated]
+	public async Task<IActionResult> CheckFollowAsync([FromQuery] CheckFollowRequest requestBody) {
+		try {
+			return this.Ok(new CheckFollowResponse {
+				Succeeded = true,
+				Content = new CheckFollowResponse.Body {
+					Following = await this._userService.CheckFollowAsync(
+						requestBody.UserId,
+						this._identityService.GetUserIdFromAuthToken(this.Request.Cookies[HeaderNames.Authorization]!)!
+					)
+				}
+			});
+		}
+		catch (InfoException e) {
+			return this.InfoExceptionResponse<CheckFollowResponse>(e);
+		}
+		catch (Exception) {
+			return this.InternalServerErrorResponse<CheckFollowResponse>();
+		}
+	}
 }
