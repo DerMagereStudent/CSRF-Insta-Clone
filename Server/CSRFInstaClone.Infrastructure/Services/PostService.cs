@@ -93,17 +93,20 @@ public class PostService : IPostService {
 			.Where(f => f.FollowerId.Equals(userId))
 			.Select(f => f.UserId).ToListAsync();
 
-		return await this.GetPostsAsync(userId, count, offset, p => followingUsers.Contains(p.UserId));
+		return await this.GetPostsAsync(userId, count, offset, q => q.Where(p => followingUsers.Contains(p.UserId)));
 	}
 
 	public async Task<List<PostDto>> GetPostsAsync(string userId, int count, int offset) {
-		return await this.GetPostsAsync(userId, count, offset, p => p.UserId.Equals(userId));
+		return await this.GetPostsAsync(userId, count, offset, q => q.Where(p => p.UserId.Equals(userId)));
 	}
 
-	private async Task<List<PostDto>> GetPostsAsync(string userId, int count, int offset, Func<Post, bool> predicate) {
-		IQueryable<PostDto> query = this._applicationDbContext.Posts
-			.Include(p => p.Images)
-			.Where(p => p.UserId.Equals(userId))
+	private async Task<List<PostDto>> GetPostsAsync(string userId, int count, int offset, Func<IQueryable<Post>, IQueryable<Post>> whereBuilder) {
+		IQueryable<Post> query = this._applicationDbContext.Posts
+			.Include(p => p.Images);
+			
+		query = whereBuilder(query);
+			
+		IQueryable<PostDto> finalQuery = query 
 			.Select(p => new PostDto {
 				Id = p.Id,
 				UserId = p.UserId,
@@ -117,12 +120,12 @@ public class PostService : IPostService {
 			.OrderByDescending(p => p.DateTimePosted);
 
 		if (offset >= 0)
-			query = query.Skip(offset);
+			finalQuery = finalQuery.Skip(offset);
 
 		if (count >= 0)
-			query = query.Take(count);
+			finalQuery = finalQuery.Take(count);
 
-		var posts = await query.ToListAsync();
+		var posts = await finalQuery.ToListAsync();
 
 		foreach (var post in posts)
 			post.Likes = await this._applicationDbContext.Likes.Where(l => l.PostId.Equals(post.Id)).CountAsync();
