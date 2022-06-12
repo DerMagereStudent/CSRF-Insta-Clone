@@ -4,7 +4,7 @@ services:
     build:
       context: ./
       dockerfile: Identity.Dockerfile
-    command: 'dotnet IdentityService.WebAPI.dll --urls=http://*:7001 --environment="Development"'
+    command: 'dotnet IdentityService.WebAPI.dll'
     environment:
       POSTGRES_HOST: identity_database
       POSTGRES_USER: postgres
@@ -34,7 +34,7 @@ services:
     build:
       context: ./
       dockerfile: Instaclone.Dockerfile
-    command: 'dotnet CSRFInstaClone.WebAPI.dll --urls=http://*:7002 --environment="Development"'
+    command: 'dotnet CSRFInstaClone.WebAPI.dll'
     environment:
       POSTGRES_HOST: instaclone_database
       POSTGRES_USER: postgres
@@ -57,7 +57,7 @@ services:
     build:
       context: ./
       dockerfile: ApiGateway.Dockerfile
-    command: 'dotnet CSRFInstaClone.ApiGateway.dll --urls=http://*:7003 --environment="Development"'
+    command: 'dotnet CSRFInstaClone.ApiGateway.dll'
     ports:
       - 7003:7003
     restart: unless-stopped

@@ -3,5 +3,5 @@
 namespace CSRFInstaClone.Core.Contracts.Requests.User; 
 
 public class UpdateBiographyRequest {
-	[Required] public string Biography { get; set; }
+	[Required(AllowEmptyStrings = true)] public string Biography { get; set; }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using CSRFInstaClone.Core.Dtos;
 using CSRFInstaClone.Core.Entities;
 using CSRFInstaClone.Core.Exceptions;
 using CSRFInstaClone.Core.Services;
@@ -87,9 +88,49 @@ public class PostService : IPostService {
 		await this._applicationDbContext.SaveChangesAsync();
 	}
 
-	public async Task<List<Post>> GetPostsAsync(string userId, int count, int offset) {
-		IQueryable<Post> query = this._applicationDbContext.Posts
+	public async Task<List<PostDto>> GetHomePagePostsAsync(string userId, int count, int offset) {
+		var followingUsers = await this._applicationDbContext.Followers
+			.Where(f => f.FollowerId.Equals(userId))
+			.Select(f => f.UserId).ToListAsync();
+		
+		IQueryable<PostDto> postsQuery = this._applicationDbContext.Posts
+			.Include(p => p.Images)
+			.Where(p => followingUsers.Contains(p.UserId))
+			.Select(p => new PostDto {
+				Id = p.Id,
+				UserId = p.UserId,
+				Description = p.Description,
+				DateTimePosted = p.DateTimePosted,
+				Images = p.Images.Select(i => new ImageDto {
+					Id = i.Id,
+					PostId = i.PostId
+				}).ToList()
+			})
+			.OrderByDescending(p => p.DateTimePosted);
+
+		if (offset > 0)
+			postsQuery = postsQuery.Skip(offset);
+
+		if (count > 0)
+			postsQuery = postsQuery.Take(count);
+
+		return await postsQuery.ToListAsync();
+	}
+
+	public async Task<List<PostDto>> GetPostsAsync(string userId, int count, int offset) {
+		IQueryable<PostDto> query = this._applicationDbContext.Posts
+			.Include(p => p.Images)
 			.Where(p => p.UserId.Equals(userId))
+			.Select(p => new PostDto {
+				Id = p.Id,
+				UserId = p.UserId,
+				Description = p.Description,
+				DateTimePosted = p.DateTimePosted,
+				Images = p.Images.Select(i => new ImageDto {
+					Id = i.Id,
+					PostId = i.PostId
+				}).ToList()
+			})
 			.OrderByDescending(p => p.DateTimePosted);
 
 		if (offset >= 0)

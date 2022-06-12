@@ -4,7 +4,7 @@ using CSRFInstaClone.Core.Dtos;
 
 namespace CSRFInstaClone.Core.Contracts.Responses.Posts; 
 
-public class GetPostsResponse : BaseResponse<GetPostsResponse.Body> {
+public class GetHomePagePostsResponse : BaseResponse<GetHomePagePostsResponse.Body> {
 	public class Body {
 		public List<PostDto> Posts { get; set; }
 	}

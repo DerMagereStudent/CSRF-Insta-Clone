@@ -12,6 +12,7 @@ using CSRFInstaClone.WebAPI.Extensions;
 using CSRFInstaClone.WebAPI.Filters;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
 
 namespace CSRFInstaClone.WebAPI.Controllers; 
 
@@ -25,10 +26,42 @@ public class PostController : ControllerBase {
 		this._postService = postService;
 		this._identityService = identityService;
 	}
+	
+	[HttpGet]
+	[Route("homepage")]
+	[UserAuthenticated]
+	public async Task<IActionResult> GetHomePagePostsAsync([FromQuery] GetHomePagePostsRequest requestBody) {
+		try {
+			return this.Ok(new GetHomePagePostsResponse {
+				Succeeded = true,
+				Messages = new[] {
+					new Info {
+						Code = "PostsReturned",
+						Description = "The requested list of posts was returned successfully"
+					}
+				},
+				Content = new GetHomePagePostsResponse.Body {
+					Posts = await this._postService.GetHomePagePostsAsync(
+						this._identityService.GetUserIdFromAuthToken(this.Request.Cookies[HeaderNames.Authorization]!)!,
+						requestBody.Count,requestBody.Offset
+					)
+				}
+			});
+		}
+		catch (InfoException e) {
+			return this.InfoExceptionResponse<GetPostsResponse>(e);
+		}
+		catch (Exception) {
+			return this.InternalServerErrorResponse<GetPostsResponse>();
+		}
+	}
 
 	[HttpGet]
+	[UserAuthenticated]
 	public async Task<IActionResult> GetPostsAsync([FromQuery] GetPostsRequest requestBody) {
 		try {
+			var userId = requestBody.UserId ?? this._identityService.GetUserIdFromAuthToken(this.Request.Cookies[HeaderNames.Authorization]!)!;
+			
 			return this.Ok(new GetPostsResponse {
 				Succeeded = true,
 				Messages = new[] {
@@ -38,8 +71,7 @@ public class PostController : ControllerBase {
 					}
 				},
 				Content = new GetPostsResponse.Body {
-					Posts = await this._postService.GetPostsAsync(requestBody.UserId, requestBody.Count,
-						requestBody.Offset)
+					Posts = await this._postService.GetPostsAsync(userId, requestBody.Count, requestBody.Offset)
 				}
 			});
 		}
@@ -56,7 +88,7 @@ public class PostController : ControllerBase {
 	public async Task<IActionResult> UploadPostAsync([FromBody] UploadPostRequest requestBody) {
 		try {
 			await this._postService.UploadPostAsync(
-				this._identityService.GetUserIdFromAuthToken(this.Request.Headers.Authorization)!,
+				this._identityService.GetUserIdFromAuthToken(this.Request.Cookies[HeaderNames.Authorization]!)!,
 				requestBody.Description, requestBody.ImageIds
 			);
 
@@ -82,7 +114,7 @@ public class PostController : ControllerBase {
 	[UserAuthenticated]
 	public async Task<IActionResult> DeletePostAsync([FromBody] DeletePostRequest requestBody) {
 		try {
-			await this._postService.DeletePostAsync(this._identityService.GetUserIdFromAuthToken(this.Request.Headers.Authorization)!, requestBody.PostId);
+			await this._postService.DeletePostAsync(this._identityService.GetUserIdFromAuthToken(this.Request.Cookies[HeaderNames.Authorization]!)!, requestBody.PostId);
 
 			return this.Ok(new DeletePostResponse {
 				Succeeded = true,

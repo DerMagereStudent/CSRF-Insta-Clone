@@ -258,6 +258,18 @@
             "UpstreamHttpMethod": [ "GET", "POST", "DELETE" ]
         },
         {
+            "DownstreamPathTemplate": "/v1/post/homepage",
+            "DownstreamScheme": "http",
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "instaclone_api",
+                    "Port": 7002
+                }
+            ],
+            "UpstreamPathTemplate": "/api/app/v1/post/homepage",
+            "UpstreamHttpMethod": [ "GET" ]
+        },
+        {
             "DownstreamPathTemplate": "/v1/post/image",
             "DownstreamScheme": "http",
             "DownstreamHostAndPorts": [

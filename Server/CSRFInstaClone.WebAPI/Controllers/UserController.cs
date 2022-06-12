@@ -11,6 +11,8 @@ using CSRFInstaClone.WebAPI.Extensions;
 using CSRFInstaClone.WebAPI.Filters;
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.Net.Http.Headers;
 
 namespace CSRFInstaClone.WebAPI.Controllers; 
 
@@ -19,10 +21,12 @@ namespace CSRFInstaClone.WebAPI.Controllers;
 public class UserController : ControllerBase {
 	private readonly IUserService _userService;
 	private readonly IIdentityService _identityService;
+	private readonly ILogger<UserController> _logger;
 
-	public UserController(IUserService userService, IIdentityService identityService) {
+	public UserController(IUserService userService, IIdentityService identityService, ILogger<UserController> logger) {
 		this._userService = userService;
 		this._identityService = identityService;
+		this._logger = logger;
 	}
 
 	[HttpPost]
@@ -52,7 +56,7 @@ public class UserController : ControllerBase {
 	[UserAuthenticated]
 	public async Task<IActionResult> UpdateBiographyAsync([FromBody] UpdateBiographyRequest requestBody) {
 		try {
-			await this._userService.UpdateBiographyAsync(this._identityService.GetUserIdFromAuthToken(this.Request.Headers.Authorization)!, requestBody.Biography);
+			await this._userService.UpdateBiographyAsync(this._identityService.GetUserIdFromAuthToken(this.Request.Cookies[HeaderNames.Authorization]!)!, requestBody.Biography);
 			
 			return this.Ok(new UpdateBiographyResponse() {
 				Succeeded = true,
@@ -72,8 +76,13 @@ public class UserController : ControllerBase {
 
 	[HttpGet]
 	[Route("profile")]
+	[UserAuthenticated]
 	public async Task<IActionResult> GetUserProfileAsync([FromQuery] GetUserProfileRequest requestBody) {
 		try {
+			var userId = requestBody.UserId ?? this._identityService.GetUserIdFromAuthToken(this.Request.Cookies[HeaderNames.Authorization]!)!;
+			
+			this._logger.LogInformation("UserId: {0}", userId);
+			
 			return this.Ok(new GetUserProfileResponse {
 				Succeeded = true,
 				Messages = new[] {
@@ -83,14 +92,15 @@ public class UserController : ControllerBase {
 					}
 				},
 				Content = new GetUserProfileResponse.Body {
-					Profile = await this._userService.GetUserProfileAsync(requestBody.UserId)
+					Profile = await this._userService.GetUserProfileAsync(userId)
 				}
 			});
 		}
 		catch (InfoException e) {
 			return this.InfoExceptionResponse<GetUserProfileResponse>(e);
 		}
-		catch (Exception) {
+		catch (Exception e) {
+			this._logger.LogError(e, null, Array.Empty<object?>());
 			return this.InternalServerErrorResponse<GetUserProfileResponse>();
 		}
 	}
@@ -100,7 +110,7 @@ public class UserController : ControllerBase {
 	[UserAuthenticated]
 	public async Task<IActionResult> FollowUserAsync([FromBody] FollowRequest requestBody) {
 		try {
-			await this._userService.FollowUserAsync(requestBody.UserId, this._identityService.GetUserIdFromAuthToken(this.Request.Headers.Authorization)!);
+			await this._userService.FollowUserAsync(requestBody.UserId, this._identityService.GetUserIdFromAuthToken(this.Request.Cookies[HeaderNames.Authorization]!)!);
 
 			return this.Ok(new FollowResponse {
 				Succeeded = true,
@@ -125,7 +135,7 @@ public class UserController : ControllerBase {
 	[UserAuthenticated]
 	public async Task<IActionResult> UnfollowUserAsync([FromBody] UnfollowRequest requestBody) {
 		try {
-			await this._userService.UnfollowUserAsync(requestBody.UserId, this._identityService.GetUserIdFromAuthToken(this.Request.Headers.Authorization)!);
+			await this._userService.UnfollowUserAsync(requestBody.UserId, this._identityService.GetUserIdFromAuthToken(this.Request.Cookies[HeaderNames.Authorization]!)!);
 
 			return this.Ok(new UnfollowResponse {
 				Succeeded = true,

@@ -18,13 +18,15 @@ namespace CSRFInstaClone.WebAPI.Filters;
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 public class UserAuthenticatedAttribute : Attribute, IAsyncAuthorizationFilter {
 	public async Task OnAuthorizationAsync(AuthorizationFilterContext context) {
-		if (!context.HttpContext.Request.Headers.ContainsKey(HeaderNames.Authorization)) {
+		if (!context.HttpContext.Request.Cookies.ContainsKey(HeaderNames.Authorization)) {
 			context.Result = new UnauthorizedResult();
 			return;
 		}
 
-		var token = context.HttpContext.Request.Headers.Authorization.ToString();
+		var token = context.HttpContext.Request.Cookies[HeaderNames.Authorization]!;
 		var gatewayOptions = context.HttpContext.RequestServices.GetRequiredService<IOptions<GatewayOptions>>().Value;
+		
+		Console.WriteLine(token);
 
 		using var httpClient = new HttpClient();
 		var response = await httpClient.SendPostAsync<AuthorizeRequest, AuthorizeResponse>(
